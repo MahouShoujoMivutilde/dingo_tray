@@ -98,10 +98,12 @@ namespace dingo_tray
             Invoke((MethodInvoker)delegate ()
             {
                 rtb.AppendText(text);
-                if (rtb.Lines.Length > 10000) // экономим память, типа
-                {
-                    DeleteLine(0, rtb);
-                }
+
+                if (rtb.Lines.Length > 10000) DeleteLine(0, rtb); // экономим память, типа
+
+                if (!Focused) rtb.ScrollToCaret();
+
+
             });
         }
 
