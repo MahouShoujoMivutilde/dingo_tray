@@ -101,9 +101,7 @@ namespace dingo_tray
 
                 if (rtb.Lines.Length > 10000) DeleteLine(0, rtb); // экономим память, типа
 
-                if (!Focused) rtb.ScrollToCaret();
-
-
+                rtb.ScrollToCaret();
             });
         }
 
