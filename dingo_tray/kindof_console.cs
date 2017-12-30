@@ -97,8 +97,28 @@ namespace dingo_tray
         {
             Invoke((MethodInvoker)delegate ()
             {
-               rtb.AppendText(text);
+                rtb.AppendText(text);
+                if (rtb.Lines.Length > 10000) // экономим память, типа
+                {
+                    DeleteLine(0, rtb);
+                }
             });
+        }
+
+        // https://stackoverflow.com/a/4482942
+        private void DeleteLine(int a_line, RichTextBox richTextBox)
+        {
+            int start_index = richTextBox.GetFirstCharIndexFromLine(a_line);
+            int count = richTextBox.Lines[a_line].Length;
+
+            // Eat new line chars
+            if (a_line < richTextBox.Lines.Length - 1)
+            {
+                count += richTextBox.GetFirstCharIndexFromLine(a_line + 1) -
+                    ((start_index + count - 1) + 1);
+            }
+
+            richTextBox.Text = richTextBox.Text.Remove(start_index, count);
         }
 
         private void kindof_console_FormClosed(object sender, FormClosedEventArgs e)
