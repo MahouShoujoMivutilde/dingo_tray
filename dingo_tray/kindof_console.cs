@@ -23,6 +23,7 @@ namespace dingo_tray
             Location = new Point(workingArea.Right - Size.Width, workingArea.Bottom - Size.Height);
 
             ShowInTaskbar = false;
+            WindowState = FormWindowState.Minimized;
         }
 
         private string GetArguments() {
