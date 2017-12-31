@@ -30,11 +30,11 @@ namespace dingo_tray
             string path = "dingo_tray.conf";
             if (!File.Exists(path))
             {
-                tray_icon.ShowBalloonTip(5000, "Dingo DNS", "Не найден " + path + ", запуск dingo.exe с аргментами по умолчанию: " + dingo_defaults, ToolTipIcon.Info);
+                //tray_icon.ShowBalloonTip(5000, "Dingo DNS", "Не найден " + path + ", запуск dingo.exe с аргументами по умолчанию: " + dingo_defaults, ToolTipIcon.Info);
                 return dingo_defaults;
             } else
             {
-                using (StreamReader sr = new StreamReader("dingo_tray.conf"))
+                using (var sr = new StreamReader("dingo_tray.conf"))
                 {
                     return sr.ReadToEnd();
                 }
