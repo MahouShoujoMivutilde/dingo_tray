@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.Text.RegularExpressions;
 
 namespace dingo_tray
 {
@@ -16,7 +16,6 @@ namespace dingo_tray
         public kindof_console()
         {
             InitializeComponent();
-            dingo_id = RunWithRedirect("dingo.exe", GetArguments(), dingo_output);
 
             StartPosition = FormStartPosition.Manual;
             Rectangle workingArea = Screen.GetWorkingArea(this);
@@ -24,6 +23,19 @@ namespace dingo_tray
 
             ShowInTaskbar = false;
             WindowState = FormWindowState.Minimized;
+
+            string dingo_args = GetArguments();
+
+            // если какое-то приложение занимает порт из аргументов и содержит в имени dingo - убить (на случай аварийного завершения проги раньше)
+            foreach (var p in ProcessPorts.ProcessPortMap.FindAll(x => x.PortNumber == GetPort(dingo_args)))
+            {
+                var possibly_dingo = Process.GetProcessById(p.ProcessId);
+                if (Path.GetFileName(possibly_dingo.MainModule.FileName).ToLower().Contains("dingo")) {
+                    possibly_dingo.Kill();
+                }
+                break;
+            }
+            dingo_id = RunWithRedirect("dingo.exe", dingo_args, dingo_output);
         }
 
         private string GetArguments() {
@@ -39,6 +51,17 @@ namespace dingo_tray
                     return sr.ReadToEnd();
                 }
             }
+        }
+
+        private int GetPort(string args)
+        {
+            var port_patt = new Regex(@"-port \d+", RegexOptions.IgnoreCase);
+            int port = 53;
+            if (port_patt.Match(args).Success)
+            {
+                port = int.Parse(Regex.Replace(port_patt.Match(args).Value, @"[^\d+]", ""));
+            }
+            return port;
         }
 
         private void kindof_console_SizeChanged(object sender, EventArgs e)
