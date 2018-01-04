@@ -123,8 +123,9 @@ namespace dingo_tray
             {
                 rtb.AppendText(text);
 
-                if (rtb.Lines.Length > 10000) DeleteLine(0, rtb); // экономим память, типа
+                if (rtb.Lines.Length > 500) DeleteLine(0, rtb); // экономим память, типа
 
+                rtb.SelectionStart = rtb.Text.Length;
                 rtb.ScrollToCaret();
             });
         }
